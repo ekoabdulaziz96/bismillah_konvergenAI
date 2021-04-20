@@ -1,0 +1,151 @@
+{% extends 'templates.html' %}
+{% load static %}
+
+{% comment %} CSS {% endcomment %}
+{% block app_style %}
+    {% comment %} <link rel="stylesheet" href="{% static 'backend_phm/css/style_form.css' %} "> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'vendor/select-picker/bootstrap-select.min.css' %}">
+
+  <style>
+ input[type="checkbox"]{
+      display: block;
+      width: 4%;
+  }
+  </style>
+{% endblock app_style %}
+
+{% comment %} CONTENT {% endcomment %}
+{% block content_header %}
+{% endblock content_header %}
+
+{% block content %}
+    <div class="container  ">
+    {% comment %} header {% endcomment %}
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="d-flex justify-content-between flex-wrap">
+              <div class="d-flex align-items-end flex-wrap">
+                <div class="mr-3 mr-xl-5 ml-4">
+                    <a class="btn btn-secondary" href={% url 'mw:user-index'  %}>
+                    <i class='mdi mdi-keyboard-backspace'></i> Semua {{page_role}}
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-end flex-wrap">
+                  <div class="mr-3 mr-xl-5 pt-3">
+                    <h2>{{page_judul}}</h2>
+                    <p class="mb-md-0">{{page_deskripsi}} </p>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <br>
+      
+      {% if list_matkul %}
+        <div class="card">
+        <div class="card-header alert-warning" >
+        Akses ke Mata Kuliah :
+          <ol>
+          {% for matkul in list_matkul %}
+            <li>[{{matkul.kode}}] {{matkul.nama}} ({{matkul.sks}} sks)</li>
+          {% endfor %}
+          </ol>
+        </div>
+        </div>
+      {% endif %}
+
+{% comment %} content {% endcomment %}
+       <form method="POST" enctype="multipart/form-data">
+         {% csrf_token %}
+
+            {{form.as_p}}
+         
+         <br>
+         <a class="btn btn-secondary" href="{% url 'mw:user-index' %} ">Batal</a>
+         <button type="submit" class="btn btn-success">submit</button>
+       </form>
+
+    </div>
+
+{% endblock content %}
+
+
+{% comment %} JAVASCRIPTS {% endcomment %}
+{% block app_scripts %}
+    {% comment %} <script src="{% static 'backend_phm/js/script.js' %}"></script> {% endcomment %}
+    <script src="{% static 'vendor/select-picker/bootstrap-select.min.js' %}"></script>
+
+    <script>
+        (function($) {
+        'use strict';
+            $(function() {
+                $( "#user" ).addClass('active');
+                $( ".errorlist" ).addClass('alert alert-danger');
+
+                
+                {% if set_matkul == 1 %}
+                  $('#id_matkul').removeAttr('class','form-control');
+                  $('#id_matkul').attr('class','selectpicker');
+                  $('#id_matkul').attr('data-live-search','true');
+                  $('#id_matkul').attr('data-width','100%');
+                  $('#id_matkul').attr('title','--pilih--');
+                  $('#id_matkul').attr('required','required');
+                  $('#id_matkul').attr('multiple','multiple');
+                  $('.selectpicker').selectpicker('refresh');
+                {% endif %}
+                  
+                
+                //$('#id_is_dosen').attr('checked','checked');
+
+              // //CHANGE: 
+                // $('#id_is_kprodi').change(function(){
+                //   console.log('kprodi')
+                //     if ($(this).is(':checked')){
+                //   console.log('kprodi-check')
+                //       $('#id_is_dosen').removeAttr('checked');
+                //       $('#id_is_assesor').removeAttr('checked','checked');
+                //     }
+                // });
+                // $('#id_is_dosen').change(function(){
+                //   console.log('dosen')
+                //     if ($(this).is(':checked')){
+                //   console.log('dosen-check')
+                //       $('#id_is_kprodi').removeAttr('checked','checked');
+                //       $('#id_is_assesor').removeAttr('checked','checked');
+                //     }
+                // });
+                // $('#id_is_assesor').change(function(){
+                //   console.log('assesor')
+                //     if ($(this).is(':checked')){
+                //   console.log('assesor-check')
+                //       $('#id_is_kprodi').removeAttr('checked','checked');
+                //       $('#id_is_dosen').removeAttr('checked','checked');
+                //     }
+                // });
+
+
+              {% comment %} {% if role == 'create_super_user' or role == 'update_super_user'  %} {% endcomment %}
+               //init is_superuser
+               // $('#id_is_superuser').append('<option value="1" selected>Ya</option>');
+                //$('#id_is_superuser').append('<option value="0" >Tidak</option>');
+              
+              {% comment %} {% elif role == 'create_user' or role == 'update_user'%} {% endcomment %}
+                //$('#id_roles').removeAttr('class','form-control');
+                //$('#id_roles').attr('class','selectpicker');
+                //$('#id_roles').attr('data-live-search','true');
+                //$('#id_roles').attr('data-width','100%');
+                //$('#id_roles').attr('title','--pilih--');
+                //$('#id_roles').attr('required','required');
+                //$('#id_roles').attr('multiple','multiple');
+                //$('.selectpicker').selectpicker('refresh');
+              {% comment %} {% endif %} {% endcomment %}
+
+             
+
+              
+  
+            });
+        })(jQuery);
+    </script>
+{% endblock app_scripts %}

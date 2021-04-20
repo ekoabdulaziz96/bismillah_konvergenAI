@@ -1,0 +1,101 @@
+{% extends 'templates.html' %}
+{% load static %}
+
+{% comment %} CSS {% endcomment %}
+{% block app_style %}
+    <link rel="stylesheet" href="{% static 'vendor/select-picker/bootstrap-select.min.css' %}">
+
+  <style>
+ input[type="checkbox"]{
+      display: block;
+      width: 4%;
+  }
+  </style>
+{% endblock app_style %}
+
+{% comment %} CONTENT {% endcomment %}
+{% block content_header %}
+{% endblock content_header %}
+
+{% block content %}
+    <div class="container  ">
+    {% comment %} header {% endcomment %}
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="d-flex justify-content-between flex-wrap">
+              <div class="d-flex align-items-end flex-wrap">
+                <div class="mr-3 mr-xl-5 ml-4">
+                    <a class="btn btn-secondary" href={% url 'ad:task-index'  %}>
+                    <i class='mdi mdi-keyboard-backspace'></i> Semua {{page_role}}
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-end flex-wrap">
+                  <div class="mr-3 mr-xl-5 pt-3">
+                    <h2>{{page_judul}}</h2>
+                    <p class="mb-md-0">{{page_deskripsi}} pada {{matkul.nama}}</p>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <br>
+{% comment %} content {% endcomment %}
+       <form method="POST" enctype="multipart/form-data">
+         {% csrf_token %}
+
+            {{form.as_p}}
+         
+         <br>
+         <a class="btn btn-secondary" href="{% url 'ad:task-index' %} ">Batal</a>
+         <button type="submit" class="btn btn-success">submit</button>
+       </form>
+
+    </div>
+
+{% endblock content %}
+
+
+{% comment %} JAVASCRIPTS {% endcomment %}
+{% block app_scripts %}
+    <script src="{% static 'vendor/select-picker/bootstrap-select.min.js' %}"></script>
+
+    <script>
+        (function($) {
+        'use strict';
+            $(function() {
+                $( "#task" ).addClass('active');
+                $( ".errorlist" ).addClass('alert alert-danger');
+
+                
+                {% if not user.is_superuser %}
+                  $('#id_user').find('option').remove();
+                  $('#id_user').append('<option value="{{user.id}}" selected>{{user.username}}</option>');  
+                  $('#id_user').attr('readonly','readonly');  
+                {% else %}
+                  $('#id_user').removeAttr('class','form-control');
+                  $('#id_user').attr('class','selectpicker');
+                  $('#id_user').attr('data-live-search','true');
+                  $('#id_user').attr('data-width','100%');
+                  $('#id_user').attr('title','--pilih--');
+                  $('#id_user').attr('required','required');
+                {% endif %}
+                
+                $('#id_dataset').removeAttr('class','form-control');
+                $('#id_dataset').attr('class','selectpicker');
+                $('#id_dataset').attr('data-live-search','true');
+                $('#id_dataset').attr('data-width','100%');
+                $('#id_dataset').attr('title','--pilih--');
+                $('#id_dataset').attr('required','required');
+
+                //$('#id_dataset').attr('multiple','multiple');
+                $('.selectpicker').selectpicker('refresh');
+
+             
+
+              
+  
+            });
+        })(jQuery);
+    </script>
+{% endblock app_scripts %}

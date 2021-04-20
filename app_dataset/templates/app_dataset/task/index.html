@@ -1,0 +1,325 @@
+
+{% extends 'templates.html' %}
+{% load static %}
+
+{% comment %} CSS {% endcomment %}
+{% block app_style %}
+    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %} "> {% endcomment %}
+{% endblock app_style %}
+
+{% comment %} CONTENT {% endcomment %}
+{% block content_header %}
+{% endblock content_header %}
+
+{% block content %}
+
+    <div class=" mr-3">
+    {% comment %} header {% endcomment %}
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="d-flex justify-content-between flex-wrap">
+              <div class="d-flex justify-content-between align-items-end flex-wrap">
+                  <div class="ml-4 ml-xl-5 mt-3">
+                    <h2>{{page_judul}}</h2>
+                    <p class="mb-md-0">{{page_deskripsi}}  pada {{matkul.nama}}</p>
+                  </div>
+              </div>
+              <div class="d-flex align-items-end flex-wrap">
+
+                <div class="mr-4 mr-xl-4 ml-4 pt-3">
+
+                    <a class="btn btn-outline-success btn-icon-text" href="{% url 'ad:task-create' %}">
+                      <i class='mdi mdi-hospital btn-icon-prepend'></i> Tambah {{page_role}}
+                    </a>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      <br>
+{% comment %} content {% endcomment %}
+              <div class="card">
+                <div class="card-header alert-warning" >
+                  <h6> <u> Perhatian </u>: task yang dihapus akan bersifat temporal, sehingga untuk membatalkan proses tersebut silahkan hubungi admin </h6>
+                  <p>Catatan : task (dataset) yang dihapus [temporal] tidak bisa ditambakan lagi</p>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="dataTable" class="table table-hover">
+                      <thead>
+                        <tr>
+                            <th width="5%">No</th>
+                            {% if user.is_superuser %}
+                              <th>User</th>
+                            {% endif %}
+                            <th >Task </th>
+                            <th >Dataset</th>
+                            <th width="5%">Booking</th>
+                            <th width="5%">Download</th>
+                            {% if user.is_superuser %}
+                              <th width="5%">dihapus [temporal]  </th>
+                            {% endif %}
+
+                            <th width="13%">Kelola</th>
+                        </tr>
+                      </thead> 
+                      <tbody>
+                            
+                            {% for task in tasks %}
+                              <tr>
+                                <td class='text-center'>{{forloop.counter}} </td>
+                                {% if user.is_superuser == 1  %}
+                                  <td>{{task.user.username}}</td>
+                                {% endif %}
+                                <td> {{task.name}}</td>   
+                                <td> {{task.dataset.name}} </td>   
+
+                                {% if task.isBooking %}
+                                  <td>
+                                    <a id='set-booking' class="btn btn-outline-secondary btn-fw use-dataset" href="{% url 'ad:task-set-booking' task.id %}" title='Set Revoke Booking'>
+                                    <i class="mdi mdi-alarm-check"></i>Ya</a>
+                                  </td>                                
+                                  <td>
+                                    <a class="btn btn-outline-info btn-fw use-dataset" href="{{task.dataset.fileDataset.url}}" target="__blank" title='Download Dataset'>
+                                    <i class="mdi mdi-download"></i></a>
+                                  </td>
+                                {% else %}
+                                  <td>
+                                    <a id='set-booking' class="btn btn-outline-info btn-fw use-dataset" href="{% url 'ad:task-set-booking' task.id %}" title='Set Booking'>
+                                    <i class="mdi mdi-alarm-off"></i>Tidak</a>
+                                  </td>
+                                  <td>
+                                    <a class="btn btn-secondary btn-fw use-dataset" href="#" title='Set Booking Dahulu'>
+                                    <i class="mdi mdi-download"></i></a>
+                                  </td>                                
+                                {% endif %}
+                                
+                                
+                                {% if user.is_superuser  %}
+                                  {% if task.isSoftDelete %}
+                                    <td>
+                                        <a id='cancel-soft-delete' class="btn btn-outline-secondary btn-fw use-dataset" href="{% url 'ad:task-cancel-soft-delete' task.id %}" title='cancel hapus [temporal] {{task}}'>
+                                        <i class="mdi mdi-delete-forever"></i>Ya</a>
+                                    </td>
+                                  {% else %}
+                                    <td>
+                                        <a class="delete-data btn btn-outline-danger btn-fw use-dataset" href="{% url 'ad:task-soft-delete' task.id %}" title='hapus [temporal] {{task}}'>
+                                        <i class="mdi mdi-delete-forever"></i>Tidak</a>
+                                    </td>
+                                  {% endif %}
+                                {% endif %}
+
+                                <td>
+                                    <a class="btn btn-outline-primary btn-fw" href="{% url 'ad:task-detail' task.id %}" title='detail {{task}} '><i class="mdi mdi-book-open-page-variant"></i></a>
+                                    <a class="btn btn-outline-warning btn-fw" href="{% url 'ad:task-update' task.id %}" title='edit {{task}}'><i class="mdi mdi-eyedropper"></i></a>
+                                    
+                                {% if user.is_superuser  %}
+                                    <a class="delete-data btn btn-danger btn-fw" href="{% url 'ad:task-delete' task.id %}" title='hapus [permanen] {{task}}'><i class="mdi mdi-delete-forever"></i></a>
+                                {% else %}
+                                    <a class="delete-data btn btn-outline-danger btn-fw" href="{% url 'ad:task-soft-delete' task.id %}" title='hapus [temporal] {{task}}'>
+                                    <i class="mdi mdi-delete-forever"></i></a>
+                                {% endif %}
+                                </td>
+
+                              </tr>        
+                            {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              
+
+    </div>
+{% endblock content %}
+
+
+{% comment %} JAVASCRIPTS {% endcomment %}
+{% block app_scripts %}
+    <script>
+    (function($) {
+        'use strict';
+        $(function() {
+            $("#task").addClass('active');
+            
+            $('#dataTable').DataTable({
+                "aLengthMenu": [
+                    [5, 10, 15, -1],
+                    [5, 10, 15, "All"]
+                ],
+                "iDisplayLength": 10,
+                "language": {
+                    search: "search : "
+                },
+                searching: true, paging: true, info: true
+            });
+
+            {% if messages %}
+              {% for message in messages %}
+                swal({
+                  type: 'success',
+                  title: 'Berhasil!',
+                  text: '{{message}}',
+                  timer: 2500
+                });
+              {% endfor %}
+            {% endif %}
+
+            // action add update
+
+              // delete
+              $('body').on('click', '.delete-data', function (event) {
+                  event.preventDefault();
+                  var me = $(this),
+                      url = me.attr('href'),
+                      title = me.attr('title'),
+                      csrf_token = $("[name=csrfmiddlewaretoken]").val();
+                  swal({
+                      title: 'Apakah Anda Yakin ?',
+                      text: 'ingin meng' + '"'+ title +'"',
+                      type: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Hapus',
+                      cancelButtonText: 'Batal'
+                  }).then((result) => {
+                  if (result.value) {
+                      $.ajax({
+                          url: url,
+                          type: "POST",
+                          data: {
+                              'csrfmiddlewaretoken': csrf_token
+                          },
+                          success: function (response) {
+                              setTimeout(function () { location.reload();}, 2600);
+                              swal({
+                                  type: 'success',
+                                  title: 'Success!',
+                                  text: 'Data ' + '"'+ title +'"'+ ' berhasil dihapus!',
+                                  timer: 2500
+
+                              });
+                          },
+                          error: function (xhr) {
+                              swal({
+                                  type: 'error',
+                                  title: 'Oops...',
+                                  text: 'Something went wrong!'
+                              });
+                          }
+                      });
+                  }
+                  });
+              });
+
+              // set booking
+              $('body').on('click', '#set-booking', function (event) {
+                  event.preventDefault();
+                  var me = $(this),
+                      url = me.attr('href'),
+                      title = me.attr('title'),
+                      csrf_token = $("[name=csrfmiddlewaretoken]").val();
+                  swal({
+                      title: 'Apakah Anda Yakin ?',
+                      text: 'ingin melakukan ' + '"'+ title  + '"' ,
+                      type: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Submit'
+                  }).then((result) => {
+                  if (result.value) {
+                      $.ajax({
+                          url: url,
+                          type: "POST",
+                          data: {
+                              'csrfmiddlewaretoken': csrf_token
+                          },
+                          success: function (response) {
+                              if (response == 'success') {
+                                setTimeout(function () { location.reload();}, 2600);
+                                swal({
+                                    type: 'success',
+                                    title: 'Success!',
+                                    text: '"'+ title +'"'+ ' berhasil dilakukan',
+                                    timer: 2500
+                                });
+                              }else {
+                                swal({
+                                  type: response,
+                                  title: 'Tidak bisa booking',
+                                  text: '"--mohon maaf, silahkan hubungi admin--"'
+                              });
+                              }
+                          },
+                          error: function (xhr) {
+                              swal({
+                                  type: 'error',
+                                  title: 'Tidak bisa booking',
+                                  text: '"--mohon maaf, silahkan hubungi admin--"'
+                              });
+                          }
+                      });
+                  }
+                  });
+              });
+
+              // cancel soft delete
+              $('body').on('click', '#cancel-soft-delete', function (event) {
+                  event.preventDefault();
+                  var me = $(this),
+                      url = me.attr('href'),
+                      title = me.attr('title'),
+                      csrf_token = $("[name=csrfmiddlewaretoken]").val();
+                  swal({
+                      title: 'Apakah Anda Yakin ?',
+                      text: 'ingin melakukan ' + '"'+ title  + '"' ,
+                      type: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Submit'
+                  }).then((result) => {
+                  if (result.value) {
+                      $.ajax({
+                          url: url,
+                          type: "POST",
+                          data: {
+                              'csrfmiddlewaretoken': csrf_token
+                          },
+                          success: function (response) {
+                              if (response == 'success') {
+                                setTimeout(function () { location.reload();}, 2600);
+                                swal({
+                                    type: 'success',
+                                    title: 'Success!',
+                                    text: '"'+ title +'"'+ ' berhasil dilakukan',
+                                    timer: 2500
+                                });
+                              }else {
+                                swal({
+                                  type: response,
+                                  title: 'Tidak bisa cancel hapus [temporal]',
+                                  text: '"--mohon maaf, silahkan hubungi admin--"'
+                              });
+                              }
+                          },
+                          error: function (xhr) {
+                              swal({
+                                  type: 'error',
+                                  title: 'Tidak bisa cancel hapus [temporal]',
+                                  text: '"--mohon maaf, silahkan hubungi admin--"'
+                              });
+                          }
+                      });
+                  }
+                  });
+              });
+
+        });
+    })(jQuery);
+    </script>
+{% endblock app_scripts %}

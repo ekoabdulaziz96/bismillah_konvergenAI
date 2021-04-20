@@ -1,0 +1,65 @@
+{% load static %}
+    
+     <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+    {% if user.is_authenticated %}
+      <li class="nav-item" id="home">
+        <a class="nav-link" href="{% url 'index' %}">
+          <i class="mdi mdi-home menu-icon"></i>
+          <span class="menu-title">Home</span>
+        </a>
+      </li>
+
+    {% if user.is_superuser == 1  %}
+      <li class="nav-item" id="dataset">
+        <a class="nav-link" href="{% url 'ad:dataset-index' %}">
+          <i class="mdi mdi-database menu-icon"></i>
+          <span class="menu-title">Dataset</span>
+        </a>
+      </li>
+    {% endif %}
+
+      <li class="nav-item" id="task">
+        <a class="nav-link" href="{% url 'ad:task-index' %}">
+          <i class="mdi mdi-book-open-page-variant menu-icon"></i>
+          <span class="menu-title">Task</span>
+        </a>
+      </li>
+
+   
+    {% if user.is_superuser == 1  %}
+        <li class="nav-item  alert-warning">
+          <a class="nav-link 6" href="#">
+            <span class="menu-title"></span>
+          </a>
+        </li> 
+              <li class="nav-item" id="user">
+                <a class="nav-link" href="{% url 'mw:user-index' %}">
+                  <i class="mdi mdi-account-settings menu-icon"></i>
+                  <span class="menu-title">User</span>
+                </a>
+              </li>
+    {% endif %}
+{% endif %}
+{% comment %} ------ {% endcomment %}
+        {% comment %} {% if user.is_authenticated %}
+          {% if user.is_superuser == 1 %}
+        <li class="nav-item  alert-warning">
+            <a class="nav-link" href="#">
+              <span class="menu-title"></span>
+            </a>
+          </li> 
+                <li class="nav-item" id="access-control">
+                  <a class="nav-link" href="{% url 'index' %}">
+                    <i class="mdi mdi-account-network menu-icon"></i>
+                    <span class="menu-title">Access Control</span>
+                  </a>
+                </li>
+          {% endif %}
+        {% endif %} {% endcomment %}
+  
+{% comment %} ------ {% endcomment %}
+
+
+        </ul>
+      </nav>
