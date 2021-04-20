@@ -1,8 +1,6 @@
 from .settings import *
-import dj_database_url
 
-# import environ
-# env = environ.Env()
+import dj_database_url
 import os
 
 ALLOWED_HOSTS += ['bismillah-konvergen-ai.herokuapp.com']
