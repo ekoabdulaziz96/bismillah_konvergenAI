@@ -13,6 +13,6 @@ DEBUG = os.environ.get('DJANGO_DEBUG')
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
 
-INSTALLED_APPS += [whitenoise.runserver_nostatic]
+INSTALLED_APPS += ['whitenoise.runserver_nostatic']
 MIDDLEWARE += ['whitenoise.middleware.WhiteNoiseMiddleware']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

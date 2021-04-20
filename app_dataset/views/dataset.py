@@ -4,6 +4,9 @@ from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.conf import settings
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 #--------------models
 from app_dataset import models
 
@@ -40,6 +43,7 @@ EC_dataset_detailView ={
     }
 #----------------------------------------------------------------------------------------------Class view
 #---------------------------------------------------------------------Read (list)
+@method_decorator(login_required, name='dispatch')
 class DatasetListView(ListView):
     model = models.Dataset
     ordering = ['id']
@@ -56,6 +60,7 @@ class DatasetListView(ListView):
         context = super(DatasetListView, self).get_context_data(*args, **kwargs)
         return context
 #---------------------------------------------------------------------Create
+@method_decorator(login_required, name='dispatch')
 class DatasetCreateView(SuccessMessageMixin, CreateView):
     form_class = forms.DatasetForm
     template_name = "app_dataset/dataset/create.html"
@@ -72,6 +77,7 @@ class DatasetCreateView(SuccessMessageMixin, CreateView):
         return 'Data Dataset berhasil ditambahkan'
 
 #---------------------------------------------------------------------Update
+@method_decorator(login_required, name='dispatch')
 class DatasetUpdateView(SuccessMessageMixin, UpdateView):
     model = models.Dataset
     form_class = forms.DatasetForm
@@ -90,6 +96,7 @@ class DatasetUpdateView(SuccessMessageMixin, UpdateView):
         return 'Data Dataset berhasil diperbarui'
 
 #---------------------------------------------------------------------Delete
+@method_decorator(login_required, name='dispatch')
 class DatasetDeleteView(DeleteView):
     model = models.Dataset
     # template_name = "app_dataset/dataset/create.html"
@@ -102,6 +109,7 @@ class DatasetDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 #---------------------------------------------------------------------Detail
+@method_decorator(login_required, name='dispatch')
 class DatasetDetailView(DetailView):
     model = models.Dataset
     template_name = "app_dataset/dataset/detail.html"

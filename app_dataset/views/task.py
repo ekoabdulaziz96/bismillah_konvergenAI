@@ -4,6 +4,9 @@ from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.conf import settings
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 #--------------models
 from app_dataset import models
 
@@ -40,6 +43,7 @@ EC_task_detailView ={
     }
 #----------------------------------------------------------------------------------------------Class view
 #---------------------------------------------------------------------Read (list)
+@method_decorator(login_required, name='dispatch')
 class TaskListView(ListView):
     model = models.Task
     ordering = ['id']
@@ -60,6 +64,7 @@ class TaskListView(ListView):
         context = super(TaskListView, self).get_context_data(*args, **kwargs)
         return context
 #---------------------------------------------------------------------Create
+@method_decorator(login_required, name='dispatch')
 class TaskCreateView(SuccessMessageMixin, CreateView):
     form_class = forms.TaskForm
     template_name = "app_dataset/task/create.html"
@@ -81,6 +86,7 @@ class TaskCreateView(SuccessMessageMixin, CreateView):
         return 'Data Task berhasil ditambahkan'
 
 #---------------------------------------------------------------------Update
+@method_decorator(login_required, name='dispatch')
 class TaskUpdateView(SuccessMessageMixin, UpdateView):
     model = models.Task
     form_class = forms.TaskForm
@@ -99,6 +105,7 @@ class TaskUpdateView(SuccessMessageMixin, UpdateView):
         return 'Data Task berhasil diperbarui'
 
 #---------------------------------------------------------------------Delete
+@method_decorator(login_required, name='dispatch')
 class TaskDeleteView(DeleteView):
     model = models.Task
     # template_name = "app_dataset/task/create.html"
@@ -111,6 +118,7 @@ class TaskDeleteView(DeleteView):
         self.object.hard_delete()
         return HttpResponseRedirect(success_url)
 
+@method_decorator(login_required, name='dispatch')
 class TaskSoftDeleteView(DeleteView):
     model = models.Task
     # template_name = "app_dataset/task/create.html"
@@ -124,6 +132,7 @@ class TaskSoftDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 #---------------------------------------------------------------------Detail
+@method_decorator(login_required, name='dispatch')
 class TaskDetailView(DetailView):
     model = models.Task
     template_name = "app_dataset/task/detail.html"

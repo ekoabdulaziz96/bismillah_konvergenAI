@@ -1,5 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect,JsonResponse
 from django.views.generic import ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
@@ -19,8 +18,6 @@ from .forms_user_auth import UserAuthForm
 from . import views
 # from .bussiness_layer.access_control import AccessControl as AccessControlClass 
 
-import numpy as np
-import pandas as pd
 import json
 #---------------------------------------------------------------------extra_context
 EC_user_listView = {
